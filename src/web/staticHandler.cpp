@@ -2,10 +2,6 @@
 #include <FS.h>
 #include <LittleFS.h>
 
-ArRequestHandlerFunction mcpHandler = [](AsyncWebServerRequest* request) {
-    request->send(501, "text/plain", "not implemented");
-};
-
 ArRequestHandlerFunction staticHandler = [](AsyncWebServerRequest* request) {
     // Open the app.html file (for controlling the MCP Server)
     File file = LittleFS.open("/app.html");
@@ -25,8 +21,4 @@ ArRequestHandlerFunction staticHandler = [](AsyncWebServerRequest* request) {
     });
 
     request->send(response);
-};
-
-ArRequestHandlerFunction notFoundHandler = [](AsyncWebServerRequest* request) {
-    request->send(404, "text/plain", "Page Not Found");
 };
