@@ -9,6 +9,7 @@
 #endif
 
 extern ArRequestHandlerFunction staticHandler;
+extern ArRequestHandlerFunction infoEndpointHandler;
 extern ArRequestHandlerFunction mcpHandler;
 extern ArRequestHandlerFunction notFoundHandler;
 
