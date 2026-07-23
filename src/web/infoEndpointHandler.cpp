@@ -1,0 +1,17 @@
+#include <ESPAsyncWebServer.h>
+#include <ArduinoJson.h>
+#include "env.h"
+
+const char* CHIP_MODEL = ESP.getChipModel();
+
+JsonDocument infoEndpointResponse;
+
+ArRequestHandlerFunction infoEndpointHandler = [](AsyncWebServerRequest* request) {
+    infoEndpointResponse["deviceName"] = CHIP_MODEL;
+    infoEndpointResponse["wifiSSID"] = WIFI_SSID;
+
+    String result;
+    serializeJson(infoEndpointResponse, result);
+
+    request->send(200, "application/json", result);
+};

@@ -53,6 +53,8 @@ void webServerInit() {
     });
 
     server.on("/", HTTP_GET, staticHandler);
+    server.on("/info", HTTP_GET, infoEndpointHandler);
+    server.on("/connections", HTTP_GET, staticHandler); // in case they open the connections manager
     server.onNotFound(notFoundHandler);
     server.begin();
 
