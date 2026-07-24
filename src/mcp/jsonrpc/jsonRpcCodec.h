@@ -6,3 +6,4 @@
 
 ParseResult<JsonRpcRequest> parseRequest(const JsonDocument& doc);
 void writeResult(JsonDocument& doc, const JsonRpcResult& result);
+void writeError(JsonDocument& doc, const JsonVariantConst id, const int errorCode, const char* errorMessage);

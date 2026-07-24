@@ -14,7 +14,7 @@ struct ParseResult {
 
 struct BaseJsonRpcMessage {
     const char* jsonrpc = "2.0";
-    JsonVariant id;
+    JsonVariantConst id;
 };
 
 struct JsonRpcRequest : BaseJsonRpcMessage {

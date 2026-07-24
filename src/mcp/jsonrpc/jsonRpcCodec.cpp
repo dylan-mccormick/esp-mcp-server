@@ -27,3 +27,14 @@ void writeResult(JsonDocument& doc, const JsonRpcResult& result) {
     doc["jsonrpc"] = result.jsonrpc;
     doc["result"] = result.result;
 }
+
+void writeError(JsonDocument& doc, const JsonVariantConst id, const int errorCode, const char* errorMessage) {
+    JsonObject errObj = doc["error"].to<JsonObject>();
+
+    errObj["code"] = errorCode;
+    errObj["message"] = errorMessage;
+
+    doc["id"] = id;
+    doc["jsonrpc"] = "2.0";
+    doc["error"] = errObj;
+}
