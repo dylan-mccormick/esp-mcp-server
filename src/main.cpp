@@ -19,7 +19,7 @@ void setup() {
         Serial.print(".");
     }
     Serial.println("done!");
-    Serial.print("Local IP address");
+    Serial.print("Local IP address: ");
     Serial.println(WiFi.localIP());
 
     // Static file handling init
