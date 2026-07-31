@@ -5,7 +5,7 @@
 #include "router.h"
 
 #ifndef RATE_LIMIT_MAX_REQUESTS
-#define RATE_LIMIT_MAX_REQUESTS 5
+#define RATE_LIMIT_MAX_REQUESTS 10
 #endif
 #ifndef RATE_LIMIT_WINDOW
 #define RATE_LIMIT_WINDOW 10
@@ -23,7 +23,6 @@ AsyncLoggingMiddleware logging;
 AsyncCorsMiddleware cors;
 
 void webServerInit() {
-
     // HTTP request logger
     logging.setEnabled(true);
     logging.setOutput(Serial);
@@ -69,7 +68,9 @@ void webServerInit() {
     server.on("/", HTTP_GET, staticHandler);
     server.on("/info", HTTP_GET, infoEndpointHandler);
     server.on("/connections", HTTP_GET, staticHandler); // in case they open the connections manager
-    server.onNotFound(notFoundHandler);
+    server.on("/mcp", HTTP_POST, ([](AsyncWebServerRequest* req) {
+        // Do Nothing'
+    }), nullptr, mcpHandler);
     server.begin();
 
 }

@@ -2,16 +2,11 @@
 // Contains method(s) to implement signatures in mcpDispatch.h. Contains additonal helper methods
 
 #include <ArduinoJson.h>
+#include <ESPAsyncWebServer.h>
+#include "registries/mcpRequestRegistry.h"
+#include "registries/mcpNotificationRegistry.h"
 #include "mcp/jsonrpc/jsonRpcTypes.h"
 #include "mcp/jsonrpc/jsonRpcCodec.h"
-
-void handleMcpNotification(const JsonRpcRequest& req) {
-
-}
-
-void handleMcpRequest(const JsonRpcRequest& req, JsonRpcResult& res) {
-
-}
 
 void handleMcpMessage(const JsonDocument& reqDoc, JsonDocument& resDoc) {
     // parse as a JSON-RPC request
@@ -24,11 +19,23 @@ void handleMcpMessage(const JsonDocument& reqDoc, JsonDocument& resDoc) {
     const JsonRpcRequest& req = request.data;
 
     if (req.id.isNull()) { // this is an MCP notification
-        handleMcpNotification(req);
+        auto& handlers = McpNotificationRegistry::handlers();
+        auto target = handlers.find(req.method);
+        if (target == handlers.end()) return; // not expected to send a response anyway
+        target->second(req.params);
+        return;
+    }
+
+    auto& handlers = McpRequestRegistry::handlers();
+    auto target = handlers.find(req.method);
+    if (target == handlers.end()) {
+        writeError(resDoc, req.id, -32601, "Method not found");
         return;
     }
 
     JsonRpcResult res;
-    handleMcpRequest(req, res);
+    JsonVariant result = resDoc["result"];
+    res.id = req.id; // echo id, we don't have to manually process this every time
+    target->second(req.params, result);
     writeResult(resDoc, res);
 }

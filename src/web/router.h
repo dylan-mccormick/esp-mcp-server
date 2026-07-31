@@ -10,7 +10,7 @@
 
 extern ArRequestHandlerFunction staticHandler;
 extern ArRequestHandlerFunction infoEndpointHandler;
-extern ArRequestHandlerFunction mcpHandler;
+extern ArBodyHandlerFunction mcpHandler;
 extern ArRequestHandlerFunction notFoundHandler;
 
 void webServerInit();
