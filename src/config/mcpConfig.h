@@ -26,6 +26,6 @@ namespace McpServerCapabilities {
     constexpr bool resourcesSubscribe = false;
 
     // Tools
-    constexpr bool tools = false;
+    constexpr bool tools = true;
     constexpr bool toolsListChanged = false;
 }

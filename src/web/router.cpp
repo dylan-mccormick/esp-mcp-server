@@ -36,7 +36,7 @@ void webServerInit() {
     // CORS global allow
     cors.setOrigin("*");
     cors.setMethods("GET,POST,OPTIONS");
-    cors.setHeaders("Content-Type,Authorization");
+    cors.setHeaders("Content-Type,Authorization,Mcp-Method,Mcp-Protocol-Version");
     server.addMiddleware(&cors);
 
     // Origin validation logger
