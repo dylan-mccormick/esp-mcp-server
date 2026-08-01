@@ -31,7 +31,6 @@ ParseResult<JsonRpcRequest> parseRequest(const JsonDocument& doc) {
 void writeResult(JsonDocument& doc, const JsonRpcResult& result) {
     doc["id"] = result.id;
     doc["jsonrpc"] = result.jsonrpc;
-    doc["result"] = result.result;
 }
 
 void writeError(JsonDocument& doc, const JsonVariantConst id, const int errorCode, const char* errorMessage) {

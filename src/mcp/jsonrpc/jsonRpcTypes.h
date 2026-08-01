@@ -23,5 +23,5 @@ struct JsonRpcRequest : BaseJsonRpcMessage {
 };
 
 struct JsonRpcResult : BaseJsonRpcMessage {
-    JsonVariantConst result;
+    JsonVariant result;
 };

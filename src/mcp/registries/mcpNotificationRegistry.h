@@ -12,12 +12,12 @@ using McpNotificationHandlerFn = std::function<void(JsonObjectConst params)>;
 
 class McpNotificationRegistry {
     public:
-        static std::map<const char*, McpNotificationHandlerFn>& handlers() {
-            static std::map<const char*, McpNotificationHandlerFn> instance;
+        static std::map<String, McpNotificationHandlerFn>& handlers() {
+            static std::map<String, McpNotificationHandlerFn> instance;
             return instance;
         }
 
-        static bool registerHandler(const char* method, McpNotificationHandlerFn fn) {
+        static bool registerHandler(String method, McpNotificationHandlerFn fn) {
             handlers()[method] = std::move(fn);
             return true;
         }

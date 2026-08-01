@@ -34,8 +34,8 @@ void handleMcpMessage(const JsonDocument& reqDoc, JsonDocument& resDoc) {
     }
 
     JsonRpcResult res;
-    JsonVariant result = resDoc["result"];
+    res.result = resDoc["result"].to<JsonVariant>();
     res.id = req.id; // echo id, we don't have to manually process this every time
-    target->second(req.params, result);
+    target->second(req.params, res.result);
     writeResult(resDoc, res);
 }

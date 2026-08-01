@@ -11,12 +11,12 @@ using McpRequestHandlerFn = std::function<void(JsonObjectConst params, JsonVaria
 
 class McpRequestRegistry {
     public:
-        static std::map<const char*, McpRequestHandlerFn>& handlers() {
-            static std::map<const char*, McpRequestHandlerFn> instance;
+        static std::map<String, McpRequestHandlerFn>& handlers() {
+            static std::map<String, McpRequestHandlerFn> instance;
             return instance;
         }
 
-        static bool registerHandler(const char* method, const McpRequestHandlerFn fn) {
+        static bool registerHandler(String method, const McpRequestHandlerFn fn) {
             handlers()[method] = std::move(fn);
             return true;
         }
