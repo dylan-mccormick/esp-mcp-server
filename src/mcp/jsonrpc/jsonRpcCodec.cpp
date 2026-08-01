@@ -3,12 +3,8 @@
 
 #include <ArduinoJson.h>
 #include "jsonRpcTypes.h"
+#include "config/jsonRpcConfig.h"
 #include "env.h"
-
-#ifndef JSON_RPC_PROTOCOL_VERSION
-#warning "JSON_RPC_PROTOCOL_VERSION is not specified in environment file. Defaulting to 2.0."
-#define JSON_RPC_PROTOCOL_VERSION "2.0"
-#endif
 
 ParseResult<JsonRpcRequest> parseRequest(const JsonDocument& doc) {
     JsonRpcRequest req;
@@ -31,6 +27,7 @@ ParseResult<JsonRpcRequest> parseRequest(const JsonDocument& doc) {
 void writeResult(JsonDocument& doc, const JsonRpcResult& result) {
     doc["id"] = result.id;
     doc["jsonrpc"] = result.jsonrpc;
+    doc["result"]["resultType"] = jsonRpcResultTypeToString(result.resultType);
 }
 
 void writeError(JsonDocument& doc, const JsonVariantConst id, const int errorCode, const char* errorMessage) {

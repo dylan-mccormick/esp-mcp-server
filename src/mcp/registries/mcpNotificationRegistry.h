@@ -10,7 +10,7 @@
 
 using McpNotificationHandlerFn = std::function<void(JsonObjectConst params)>;
 
-class McpRequestRegistry : public McpBaseRegistry<McpNotificationHandlerFn> {};
+class McpNotificationRegistry : public McpBaseRegistry<McpNotificationHandlerFn> {};
 
 #define MCP_NOTIFICATION_HANDLER(methodName, fn) \
     static bool __attribute__((used)) MCP_HANDLER_CONCAT(methodName, __LINE__) = McpNotificationRegistry::registerHandler(methodName, fn)
