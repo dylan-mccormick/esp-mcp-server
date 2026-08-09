@@ -13,3 +13,4 @@ bool requireArg(JsonObjectConst args, const char* name, T& out) {
 }
 
 void writeToolError(JsonVariant res, const char* message);
+void writeToolSuccess(JsonVariant res, const char* message);
