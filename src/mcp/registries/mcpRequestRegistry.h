@@ -6,7 +6,7 @@
 #include <map>
 #include <ArduinoJson.h>
 #include "mcpRegistryUtils.h"
-#include "McpBaseRegistry.h"
+#include "mcpBaseRegistry.h"
 
 using McpRequestHandlerFn = std::function<void(JsonObjectConst params, JsonVariant result)>;
 
