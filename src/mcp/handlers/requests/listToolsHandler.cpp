@@ -4,7 +4,7 @@
 #include "mcp/registries/mcpRequestRegistry.h"
 #include "mcp/registries/mcpToolRegistry.h"
 
-void listToolsHandler(const JsonObjectConst req, JsonVariant result) {
+McpRequestHandlerResult listToolsHandler(const JsonObjectConst req, JsonVariant result) {
     JsonArray toolsArr = result["tools"].to<JsonArray>();
     for (const auto& [_, schema] : McpToolRegistry::handlers()) {
         JsonObject data = toolsArr.add<JsonObject>();
@@ -29,6 +29,12 @@ void listToolsHandler(const JsonObjectConst req, JsonVariant result) {
             if (target.required) requiredProperties.add(target.name);
         }
     }
+
+    // cache info
+    result["ttlMs"] = 300000;
+    result["cacheScope"] = "public";
+
+    return McpRequestHandlerResult::success();
 }
 
 MCP_REQUEST_HANDLER("tools/list", listToolsHandler);
