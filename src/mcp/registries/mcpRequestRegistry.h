@@ -8,7 +8,18 @@
 #include "mcpRegistryUtils.h"
 #include "mcpBaseRegistry.h"
 
-using McpRequestHandlerFn = std::function<void(JsonObjectConst params, JsonVariant result)>;
+struct McpRequestHandlerResult {
+    bool ok = true;
+    int errorCode = 0;
+    String errorMessage;
+
+    static McpRequestHandlerResult success() { return {}; };
+    static McpRequestHandlerResult error(int code, const String& message) {
+        return { false, code, message };
+    };
+};
+
+using McpRequestHandlerFn = std::function<McpRequestHandlerResult(JsonObjectConst params, JsonVariant result)>;
 
 class McpRequestRegistry : public McpBaseRegistry<McpRequestHandlerFn> {};
 
