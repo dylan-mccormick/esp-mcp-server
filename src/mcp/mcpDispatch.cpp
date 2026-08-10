@@ -36,6 +36,13 @@ void handleMcpMessage(const JsonDocument& reqDoc, JsonDocument& resDoc) {
     JsonRpcResult res;
     res.result = resDoc["result"].to<JsonVariant>();
     res.id = req.id; // echo id, we don't have to manually process this every time
-    target->second(req.params, res.result);
+    McpRequestHandlerResult outcome = target->second(req.params, res.result);
+
+    // parse outcome
+    if (!outcome.ok) {
+        resDoc.remove("result");
+        writeError(resDoc, reqDoc["id"], outcome.errorCode, outcome.errorMessage.c_str());
+        return;
+    }
     writeResult(resDoc, res);
 }

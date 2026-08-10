@@ -4,7 +4,7 @@
 #include "mcp/registries/mcpRequestRegistry.h"
 #include "config/mcpConfig.h"
 
-void serverDiscoverHandler(const JsonObjectConst req, JsonVariant result) {
+McpRequestHandlerResult serverDiscoverHandler(const JsonObjectConst req, JsonVariant result) {
     // Process supported versions
     JsonArray supportedVersions = result["supportedVersions"].to<JsonArray>();
     for (auto version : McpServerInfo::supportedProtocols) supportedVersions.add(version);
@@ -35,6 +35,8 @@ void serverDiscoverHandler(const JsonObjectConst req, JsonVariant result) {
     if (McpServerCapabilities::tools) {
         result["capabilities"]["tools"]["listChanged"] = McpServerCapabilities::toolsListChanged;
     }
+
+    return McpRequestHandlerResult::success();
 }
 
 MCP_REQUEST_HANDLER("server/discover", serverDiscoverHandler);
