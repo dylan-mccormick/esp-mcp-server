@@ -21,7 +21,7 @@ namespace McpServerCapabilities {
     constexpr bool promptsListChanged = false;
 
     // Resources
-    constexpr bool resources = false;
+    constexpr bool resources = true;
     constexpr bool resourcesListChanged = false;
     constexpr bool resourcesSubscribe = false;
 
