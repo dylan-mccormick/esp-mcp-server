@@ -5,7 +5,7 @@
 #include "router.h"
 
 #ifndef RATE_LIMIT_MAX_REQUESTS
-#define RATE_LIMIT_MAX_REQUESTS 10
+#define RATE_LIMIT_MAX_REQUESTS 25
 #endif
 #ifndef RATE_LIMIT_WINDOW
 #define RATE_LIMIT_WINDOW 10
