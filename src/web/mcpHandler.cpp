@@ -1,12 +1,15 @@
 #include <ESPAsyncWebServer.h>
+
 #include <vector>
+
 #include "mcp/mcpDispatch.h"
 
 struct MCPBodyBuffer {
     std::vector<uint8_t> data;
 };
 
-ArBodyHandlerFunction mcpHandler = [](AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
+ArBodyHandlerFunction mcpHandler = [](AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index,
+                                      size_t total) {
     // First chunk: alloc buffer to handle data
     if (index == 0) {
         auto* buffer = new MCPBodyBuffer();

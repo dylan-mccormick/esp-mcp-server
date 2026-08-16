@@ -1,9 +1,9 @@
 // callToolHandler.cpp
 // Contains a handler to deal with routing tool calls and returning responses
 
+#include "mcp/handlers/tools/toolUtils.h"
 #include "mcp/registries/mcpRequestRegistry.h"
 #include "mcp/registries/mcpToolRegistry.h"
-#include "mcp/handlers/tools/toolUtils.h"
 
 McpRequestHandlerResult callToolHandler(const JsonObjectConst params, JsonVariant result) {
     const char* toolName;

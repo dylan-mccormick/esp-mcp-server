@@ -1,8 +1,8 @@
 // serverDiscoverHandler.cpp
 
+#include "config/mcpConfig.h"
 #include "mcp/jsonrpc/jsonRpcTypes.h"
 #include "mcp/registries/mcpRequestRegistry.h"
-#include "config/mcpConfig.h"
 
 McpRequestHandlerResult serverDiscoverHandler(const JsonObjectConst req, JsonVariant result) {
     // Process supported versions

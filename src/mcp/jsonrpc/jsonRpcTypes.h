@@ -4,9 +4,10 @@
 #pragma once
 
 #include <ArduinoJson.h>
+
 #include "config/jsonRpcConfig.h"
 
-template<typename T>
+template <typename T>
 struct ParseResult {
     bool ok;
     T data;
@@ -23,15 +24,14 @@ struct JsonRpcRequest : BaseJsonRpcMessage {
     JsonObjectConst params;
 };
 
-enum JsonRpcResultType {
-    COMPLETE,
-    INPUT_REQUIRED
-};
+enum JsonRpcResultType { COMPLETE, INPUT_REQUIRED };
 
 inline const char* jsonRpcResultTypeToString(JsonRpcResultType resultType) {
     switch (resultType) {
-        case JsonRpcResultType::COMPLETE: return "complete";
-        case JsonRpcResultType::INPUT_REQUIRED: return "input_required";
+        case JsonRpcResultType::COMPLETE:
+            return "complete";
+        case JsonRpcResultType::INPUT_REQUIRED:
+            return "input_required";
     }
     return "";
 }

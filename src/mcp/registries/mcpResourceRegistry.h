@@ -3,9 +3,11 @@
 
 #pragma once
 
-#include <functional>
 #include <ArduinoJson.h>
-#include "mcpBaseRegistry.h"
+
+#include <functional>
+
+#include "McpBaseRegistry.h"
 #include "mcpRegistryUtils.h"
 
 using McpResourceHandlerFn = std::function<void(JsonVariant result)>;
@@ -20,12 +22,7 @@ struct McpResourceDef {
 
 class McpResourceRegistry : public McpBaseRegistry<McpResourceDef> {};
 
-#define MCP_RESOURCE_DEF(uri, name, description, mimeType, handler) \
-    static McpResourceDef _resource_def_ { \
-        uri, \
-        name, \
-        description, \
-        mimeType, \
-        handler \
-    }; \
-    static bool __attribute__((used)) MCP_HANDLER_CONCAT(_mcp_resource_, __LINE__) = McpResourceRegistry::registerHandler(uri, _resource_def_)
+#define MCP_RESOURCE_DEF(uri, name, description, mimeType, handler)                  \
+    static McpResourceDef _resource_def_{uri, name, description, mimeType, handler}; \
+    static bool __attribute__((used)) MCP_HANDLER_CONCAT(_mcp_resource_, __LINE__) = \
+        McpResourceRegistry::registerHandler(uri, _resource_def_)

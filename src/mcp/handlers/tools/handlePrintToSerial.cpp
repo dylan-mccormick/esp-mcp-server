@@ -2,14 +2,13 @@
 // Contains a tool definition for the printToSerial tool
 
 #include <ArduinoJson.h>
+
 #include "mcp/registries/mcpToolRegistry.h"
 #include "toolUtils.h"
 
-static const SchemaProperty printToSerialProps[] = {
-    { "message", "string", "message to print", true }
-};
+static const SchemaProperty printToSerialProps[] = {{"message", "string", "message to print", true}};
 
-static const ToolInputSchema printToSerialSchema = { printToSerialProps, 1 };
+static const ToolInputSchema printToSerialSchema = {printToSerialProps, 1};
 
 void handlePrintToSerial(JsonObjectConst args, JsonVariant result) {
     String message;
@@ -30,6 +29,4 @@ void handlePrintToSerial(JsonObjectConst args, JsonVariant result) {
 MCP_TOOL_DEF(
     "printToSerial",
     "Prints the specified message to the Serial stream. Not followed by a newline unless \"\\n\" is specified.",
-    printToSerialSchema,
-    handlePrintToSerial
-);
+    printToSerialSchema, handlePrintToSerial);

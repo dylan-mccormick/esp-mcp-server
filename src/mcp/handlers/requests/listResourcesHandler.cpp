@@ -1,8 +1,8 @@
 // listResourcesHandler.cpp
 // Contains a handler for resources/list call
 
-#include "mcp/registries/mcpResourceRegistry.h"
 #include "mcp/registries/mcpRequestRegistry.h"
+#include "mcp/registries/mcpResourceRegistry.h"
 
 McpRequestHandlerResult listResourcesHandler(const JsonObjectConst args, JsonVariant result) {
     JsonArray resourcesArr = result["resources"].to<JsonArray>();

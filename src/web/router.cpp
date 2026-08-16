@@ -1,8 +1,9 @@
 // router.cpp
 // Provides an implementation to initialize the web server
 
-#include <ESPAsyncWebServer.h>
 #include "router.h"
+
+#include <ESPAsyncWebServer.h>
 
 #ifndef RATE_LIMIT_MAX_REQUESTS
 #define RATE_LIMIT_MAX_REQUESTS 25
@@ -12,7 +13,8 @@
 #endif
 
 #ifdef DEV_MODE
-#warning "DEV_MODE build flag is enabled, meaning the server is vulnerable to DNS rebinding attacks. Remove this build flag when not testing."
+#warning \
+    "DEV_MODE build flag is enabled, meaning the server is vulnerable to DNS rebinding attacks. Remove this build flag when not testing."
 #else
 #define DEV_MODE false
 #endif
@@ -42,9 +44,9 @@ void webServerInit() {
     // Origin validation logger
     server.addMiddleware([](AsyncWebServerRequest* request, ArMiddlewareNext next) {
         if (!request->hasHeader("Origin") || DEV_MODE) {
-            // if DEV_MODE, we may be testing the MCP client from a different IP address -- only permissible for development
-            // if origin is not present, we will allow this, since we are concerned primarily about
-            // DNS rebinding attacks
+            // if DEV_MODE, we may be testing the MCP client from a different IP address -- only permissible for
+            // development if origin is not present, we will allow this, since we are concerned primarily about DNS
+            // rebinding attacks
             next();
             return;
         }
@@ -67,10 +69,10 @@ void webServerInit() {
 
     server.on("/", HTTP_GET, staticHandler);
     server.on("/info", HTTP_GET, infoEndpointHandler);
-    server.on("/connections", HTTP_GET, staticHandler); // in case they open the connections manager
+    server.on("/connections", HTTP_GET, staticHandler);  // in case they open the connections manager
     server.on("/mcp", HTTP_POST, ([](AsyncWebServerRequest* req) {
-        // Do Nothing'
-    }), nullptr, mcpHandler);
+                  // Do Nothing'
+              }),
+              nullptr, mcpHandler);
     server.begin();
-
 }
