@@ -104,7 +104,7 @@ void handleReadComponentMemory(JsonVariant result) {
     obj["text"] = text;
 
     // Cache
-    result["ttlMs"] = 120000;
+    result["ttlMs"] = 60000;
     result["cacheScope"] = "public";
 }
 
