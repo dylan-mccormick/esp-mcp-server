@@ -8,6 +8,7 @@
 #include <functional>
 #include <map>
 
+#include "McpBaseRegistry.h"
 #include "mcpRegistryUtils.h"
 
 using McpNotificationHandlerFn = std::function<void(JsonObjectConst params)>;
