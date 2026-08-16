@@ -11,14 +11,15 @@ ArRequestHandlerFunction staticHandler = [](AsyncWebServerRequest* request) {
         return;
     }
 
-    AsyncWebServerResponse* response = request->beginChunkedResponse("text/html", [file](uint8_t* buffer, size_t maxLen, size_t index) mutable -> size_t {
-        if (!file.available()) {
-            file.close();
-            return 0;
-        }
+    AsyncWebServerResponse* response = request->beginChunkedResponse(
+        "text/html", [file](uint8_t* buffer, size_t maxLen, size_t index) mutable -> size_t {
+            if (!file.available()) {
+                file.close();
+                return 0;
+            }
 
-        return file.read(buffer, maxLen);
-    });
+            return file.read(buffer, maxLen);
+        });
 
     request->send(response);
 };

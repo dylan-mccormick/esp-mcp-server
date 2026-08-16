@@ -1,8 +1,9 @@
 // componentMemory.cpp
 // Implementation for the ComponentMemory namespace
 
-#include "mcp/registries/mcpResourceRegistry.h"
 #include "componentMemory.h"
+
+#include "mcp/registries/mcpResourceRegistry.h"
 
 static Preferences prefs;
 static const char* NVS_NAMESPACE = "components";
@@ -109,9 +110,6 @@ void handleReadComponentMemory(JsonVariant result) {
 }
 
 MCP_RESOURCE_DEF(
-    "esp32://components",
-    "Connected Pin Descriptions",
+    "esp32://components", "Connected Pin Descriptions",
     "Provides a list of name/description pairs for the ESP32's pins, describing what is connected to which pins.",
-    "application/json",
-    handleReadComponentMemory
-);
+    "application/json", handleReadComponentMemory);

@@ -3,18 +3,19 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+
 #include <unordered_set>
+
 #include "mcp/registries/mcpToolRegistry.h"
 #include "toolUtils.h"
 
 static const std::unordered_set<uint8_t> PROHIBITED_PINS = {6, 7, 8, 9, 10, 11, 20, 24, 28, 29, 30, 31, 37, 38};
 
 static const SchemaProperty pinReadProps[] = {
-    { "pin", "integer", "gpio pin to read", true },
-    { "mode", "string", "DIGITAL_PULLUP, DIGITAL_PULLDOWN, DIGITAL, or ANALOG", true }
-};
+    {"pin", "integer", "gpio pin to read", true},
+    {"mode", "string", "DIGITAL_PULLUP, DIGITAL_PULLDOWN, DIGITAL, or ANALOG", true}};
 
-static const ToolInputSchema pinReadSchema = { pinReadProps, 2 };
+static const ToolInputSchema pinReadSchema = {pinReadProps, 2};
 
 void handlePinRead(JsonObjectConst args, JsonVariant result) {
     // require pin
@@ -40,16 +41,19 @@ void handlePinRead(JsonObjectConst args, JsonVariant result) {
     // mode validation
     uint8_t modeEnum;
     bool readAnalog = strcasecmp(mode.c_str(), "ANALOG") == 0;
-    if (strcasecmp(mode.c_str(), "DIGITAL_PULLUP") == 0) modeEnum = INPUT_PULLUP;
-    else if (strcasecmp(mode.c_str(), "DIGITAL_PULLDOWN") == 0) modeEnum = INPUT_PULLDOWN;
-    else if (strcasecmp(mode.c_str(), "DIGITAL") == 0 || strcasecmp(mode.c_str(), "ANALOG") == 0) modeEnum = INPUT;
+    if (strcasecmp(mode.c_str(), "DIGITAL_PULLUP") == 0)
+        modeEnum = INPUT_PULLUP;
+    else if (strcasecmp(mode.c_str(), "DIGITAL_PULLDOWN") == 0)
+        modeEnum = INPUT_PULLDOWN;
+    else if (strcasecmp(mode.c_str(), "DIGITAL") == 0 || strcasecmp(mode.c_str(), "ANALOG") == 0)
+        modeEnum = INPUT;
 
     if (std::unordered_set<uint8_t>{INPUT, INPUT_PULLUP, INPUT_PULLDOWN}.count(modeEnum) == 0) {
         writeToolError(result, "mode must be DIGITAL_PULLUP, DIGITAL_PULLDOWN, DIGITAL, or ANALOG");
         return;
     }
 
-    if (modeEnum != INPUT && pin >= 34) { // these pins don't have the resistors to do PULLUP/PULLDOWN
+    if (modeEnum != INPUT && pin >= 34) {  // these pins don't have the resistors to do PULLUP/PULLDOWN
         writeToolError(result, "gpio 34-39 cannot be used with DIGITAL_PULLUP or DIGITAL_PULLDOWN");
         return;
     }
@@ -61,9 +65,10 @@ void handlePinRead(JsonObjectConst args, JsonVariant result) {
     writeToolSuccess(result, String(readResult).c_str());
 }
 
-MCP_TOOL_DEF(
-    "pinRead",
-    "Reads the value of the requested pin. Set \"mode\" argument to DIGITAL_PULLUP to use INPUT_PULLUP that returns HIGH or LOW, DIGITAL_PULLDOWN to use INPUT_PULLDOWN that returns HIGH or LOW, DIGITAL for standard INPUT that returns HIGH OR LOW, ANALOG for standard INPUT that returns a value between 0-4095. GPIO 6-11, 20, 24, 28-31, 37, 38 are prohibited. Pins 34-39 may not be used with DIGITAL_PULLUP or DIGITAL_PULLDOWN. ANALOG should not be used with GPIOs 0, 2, 4, 12-15, and 25-27 as WiFi is enabled.",
-    pinReadSchema,
-    handlePinRead
-);
+MCP_TOOL_DEF("pinRead",
+             "Reads the value of the requested pin. Set \"mode\" argument to DIGITAL_PULLUP to use INPUT_PULLUP that "
+             "returns HIGH or LOW, DIGITAL_PULLDOWN to use INPUT_PULLDOWN that returns HIGH or LOW, DIGITAL for "
+             "standard INPUT that returns HIGH OR LOW, ANALOG for standard INPUT that returns a value between 0-4095. "
+             "GPIO 6-11, 20, 24, 28-31, 37, 38 are prohibited. Pins 34-39 may not be used with DIGITAL_PULLUP or "
+             "DIGITAL_PULLDOWN. ANALOG should not be used with GPIOs 0, 2, 4, 12-15, and 25-27 as WiFi is enabled.",
+             pinReadSchema, handlePinRead);

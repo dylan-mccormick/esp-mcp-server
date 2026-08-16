@@ -2,11 +2,12 @@
 // Main entrypoint to initialize all services
 
 #include <Arduino.h>
-#include <WiFi.h>
 #include <LittleFS.h>
+#include <WiFi.h>
+
 #include "env.h"
-#include "web/router.h"
 #include "tasks/tasks.h"
+#include "web/router.h"
 
 void setup() {
     Serial.begin(115200);

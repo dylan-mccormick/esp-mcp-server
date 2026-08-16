@@ -3,11 +3,11 @@
 // connected to which pins.
 
 #pragma once
-#include <Preferences.h>
 #include <ArduinoJson.h>
+#include <Preferences.h>
 
 namespace ComponentMemory {
-    void remember(int pin, const String& name, const String& notes);
-    void forget(int pin);
-    void listAll(JsonArray out);
-}
+void remember(int pin, const String& name, const String& notes);
+void forget(int pin);
+void listAll(JsonArray out);
+}  // namespace ComponentMemory

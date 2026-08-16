@@ -1,17 +1,16 @@
 // handleRememberComponent.cpp
 // Contains a tool definition for the rememberComponent tool
 
-#include "mcp/registries/mcpToolRegistry.h"
 #include "mcp/handlers/resources/componentMemory.h"
+#include "mcp/registries/mcpToolRegistry.h"
 #include "toolUtils.h"
 
 static const SchemaProperty rememberComponentProps[] = {
-    { "pin", "integer", "gpio pin to remember", true },
-    { "name", "string", "short identifier for the wire connected to this pin" },
-    { "notes", "string", "detailed description of the wire connected to this pin and its specific purpose" }
-};
+    {"pin", "integer", "gpio pin to remember", true},
+    {"name", "string", "short identifier for the wire connected to this pin"},
+    {"notes", "string", "detailed description of the wire connected to this pin and its specific purpose"}};
 
-static const ToolInputSchema rememberComponentSchema = { rememberComponentProps, 3 };
+static const ToolInputSchema rememberComponentSchema = {rememberComponentProps, 3};
 
 void handleRememberComponent(JsonObjectConst args, JsonVariant result) {
     // require pin
@@ -39,9 +38,7 @@ void handleRememberComponent(JsonObjectConst args, JsonVariant result) {
     writeToolSuccess(result, "success");
 }
 
-MCP_TOOL_DEF(
-    "rememberComponent",
-    "Saves a name/description to a specific pin. In other words, updates the esp32://components resource to reflect any component that has been newly connected to the ESP32.",
-    rememberComponentSchema,
-    handleRememberComponent
-);
+MCP_TOOL_DEF("rememberComponent",
+             "Saves a name/description to a specific pin. In other words, updates the esp32://components resource to "
+             "reflect any component that has been newly connected to the ESP32.",
+             rememberComponentSchema, handleRememberComponent);

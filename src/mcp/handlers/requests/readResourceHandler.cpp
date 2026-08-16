@@ -2,9 +2,10 @@
 // Contains a handler for resources/read call
 
 #include <ArduinoJson.h>
+
 #include "mcp/handlers/tools/toolUtils.h"
-#include "mcp/registries/mcpResourceRegistry.h"
 #include "mcp/registries/mcpRequestRegistry.h"
+#include "mcp/registries/mcpResourceRegistry.h"
 
 McpRequestHandlerResult readResourceHandler(const JsonObjectConst params, JsonVariant result) {
     String uri;

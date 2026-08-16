@@ -3,10 +3,11 @@
 
 #include <ArduinoJson.h>
 #include <ESPAsyncWebServer.h>
-#include "registries/mcpRequestRegistry.h"
-#include "registries/mcpNotificationRegistry.h"
-#include "mcp/jsonrpc/jsonRpcTypes.h"
+
 #include "mcp/jsonrpc/jsonRpcCodec.h"
+#include "mcp/jsonrpc/jsonRpcTypes.h"
+#include "registries/mcpNotificationRegistry.h"
+#include "registries/mcpRequestRegistry.h"
 
 void handleMcpMessage(const JsonDocument& reqDoc, JsonDocument& resDoc) {
     // parse as a JSON-RPC request
@@ -18,10 +19,10 @@ void handleMcpMessage(const JsonDocument& reqDoc, JsonDocument& resDoc) {
 
     const JsonRpcRequest& req = request.data;
 
-    if (req.id.isNull()) { // this is an MCP notification
+    if (req.id.isNull()) {  // this is an MCP notification
         auto& handlers = McpNotificationRegistry::handlers();
         auto target = handlers.find(req.method);
-        if (target == handlers.end()) return; // not expected to send a response anyway
+        if (target == handlers.end()) return;  // not expected to send a response anyway
         target->second(req.params);
         return;
     }
@@ -35,7 +36,7 @@ void handleMcpMessage(const JsonDocument& reqDoc, JsonDocument& resDoc) {
 
     JsonRpcResult res;
     res.result = resDoc["result"].to<JsonVariant>();
-    res.id = req.id; // echo id, we don't have to manually process this every time
+    res.id = req.id;  // echo id, we don't have to manually process this every time
     McpRequestHandlerResult outcome = target->second(req.params, res.result);
 
     // parse outcome

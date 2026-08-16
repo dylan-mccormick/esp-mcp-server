@@ -4,20 +4,21 @@
 // etc.
 
 #pragma once
-#include <functional>
-#include <map>
 #include <ArduinoJson.h>
 
-template<typename HandlerFn>
-class McpBaseRegistry {
-    public:
-        static std::map<String, HandlerFn>& handlers() {
-            static std::map<String, HandlerFn> instance;
-            return instance;
-        }
+#include <functional>
+#include <map>
 
-        static bool registerHandler(String method, const HandlerFn fn) {
-            handlers()[method] = std::move(fn);
-            return true;
-        }
+template <typename HandlerFn>
+class McpBaseRegistry {
+   public:
+    static std::map<String, HandlerFn>& handlers() {
+        static std::map<String, HandlerFn> instance;
+        return instance;
+    }
+
+    static bool registerHandler(String method, const HandlerFn fn) {
+        handlers()[method] = std::move(fn);
+        return true;
+    }
 };
