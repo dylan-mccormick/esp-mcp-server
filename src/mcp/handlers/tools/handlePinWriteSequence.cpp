@@ -12,21 +12,42 @@
 static const std::unordered_set<uint8_t> PROHIBITED_PINS = {0,  1,  3,  6,  7,  8,  9,  10, 11, 20, 24,
                                                             28, 29, 30, 31, 34, 35, 36, 37, 38, 39};
 
-static const SchemaProperty stepsEntryProps[] = {
-    {"pin", "integer", "gpio pin to write to", true},
-    {"analogValue", "integer", "value between 0-4095 to be used as pwm output", false},
-    {"digitalValue", "string", "HIGH for on, LOW for off", false},
-    {"delayBefore", "integer",
-     "milliseconds to delay before running this operation; all successive operations will wait for this one to "
-     "complete",
-     false}};
+void writePinWriteSequenceInputSchema(JsonObject inputSchema) {
+    inputSchema["type"] = "object";
+    JsonObject inputProperties = inputSchema["properties"].to<JsonObject>();
+    JsonArray requiredProperties = inputSchema["required"].to<JsonArray>();
+    requiredProperties.add("steps");
 
-static const ToolInputSchema stepsEntrySchema[] = {stepsEntryProps, 1};
+    JsonObject steps = inputProperties["steps"].to<JsonObject>();
+    steps["type"] = "array";
+    steps["description"] = "an ordered sequence of pin operations to execute";
 
-static const SchemaProperty pinWriteSequenceProps[] = {
-    {"steps", "array", "An array of steps to take during the pin write sequence.", true}};
+    // schema for each passed step
+    JsonObject stepItems = steps["items"].to<JsonObject>();
+    stepItems["type"] = "object";
 
-void writePinWriteSequenceInputSchema(JsonObject inputSchema) {}
+    JsonObject stepProperties = steps["properties"].to<JsonObject>();
+    JsonArray stepRequired = steps["required"].to<JsonArray>();
+
+    JsonObject pinProp = stepProperties["pin"].to<JsonObject>();
+    pinProp["type"] = "integer";
+    pinProp["description"] = "gpio pin to write to";
+    stepRequired.add("pin");
+
+    JsonObject analogValueProp = stepProperties["analogValue"].to<JsonObject>();
+    analogValueProp["type"] = "integer";
+    analogValueProp["description"] = "value between 0-4095 to be used as pwm output";
+
+    JsonObject digitalValueProp = stepProperties["digitalValue"].to<JsonObject>();
+    digitalValueProp["type"] = "string";
+    digitalValueProp["description"] = "HIGH for on, LOW for off";
+
+    JsonObject delayBeforeProp = stepProperties["delayBefore"].to<JsonObject>();
+    delayBeforeProp["type"] = "integer";
+    delayBeforeProp["description"] =
+        "milliseconds to delay before running this operation; all successive operations will wait for this one to "
+        "complete";
+}
 
 static const ToolInputSchema pinWriteSequenceSchema = {nullptr, 0, writePinWriteSequenceInputSchema};
 
