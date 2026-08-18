@@ -14,6 +14,12 @@ McpRequestHandlerResult listToolsHandler(const JsonObjectConst req, JsonVariant 
         data["description"] = schema.description;
         JsonObject inputSchema = data["inputSchema"].to<JsonObject>();
 
+        // for custom schemas, such as arrays
+        if (schema.schema.customSchemaWriter != nullptr) {
+            schema.schema.customSchemaWriter(inputSchema);
+            continue;
+        }
+
         inputSchema["type"] = "object";
         JsonObject inputProperties = inputSchema["properties"].to<JsonObject>();
         JsonArray requiredProperties = inputSchema["required"].to<JsonArray>();
