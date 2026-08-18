@@ -3,8 +3,10 @@
 
 #include <Arduino.h>
 
-#include "tasks.h"
+#include "refreshFrontendTask.h"
+#include "pinWriteSequenceScheduler.h"
 
 void startAllBackgroundTasks() {
-    xTaskCreate(refreshFrontendTask, "RefreshFrontendTask", 16384, nullptr, 1, nullptr);
+    startRefreshFrontendTask();
+    startPinWriteSequenceSchedulerTask();
 }

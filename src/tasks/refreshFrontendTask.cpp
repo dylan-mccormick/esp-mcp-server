@@ -5,10 +5,12 @@
 #include <HTTPClient.h>
 #include <LittleFS.h>
 
-#include "tasks.h"
-
 #define FRONTEND_PAGE_SOURCE_URL "https://registry-api.mnmzc.us.to/r/7/api/v1/public/frontend/index.html"
 #define FRONTEND_PAGE_CACHE_TTL 5 * 60 * 1000  // 5 minutes
+
+void startRefreshFrontendTask() {
+    xTaskCreate(refreshFrontendTask, "RefreshFrontendTask", 16384, nullptr, 1, nullptr);
+}
 
 void refreshFrontendTask(void* pvParameters) {
     for (;;) {
