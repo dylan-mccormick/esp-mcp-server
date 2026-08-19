@@ -4,9 +4,9 @@
 #include <queue>
 
 #include "mcp/registries/mcpToolRegistry.h"
-#include "toolUtils.h"
 #include "pin_write/pinWriteUtils.h"
 #include "tasks/pinWriteSequenceScheduler.h"
+#include "toolUtils.h"
 
 void writePinWriteSequenceInputSchema(JsonObject inputSchema) {
     inputSchema["type"] = "object";
