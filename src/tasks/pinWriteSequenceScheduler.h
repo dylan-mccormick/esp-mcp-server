@@ -3,10 +3,15 @@
 
 #pragma once
 
-#include <freertos/task.h>
+#include <queue>
+#include <variant>
+
+#include <freertos/FreeRTOS.h>
 #include <freertos/queue.h>
 
-extern TaskHandle_t pinWriteSequenceTask;
-extern QueueHandle_t pinWriteSequenceQueue;
+#include "pin_write/pinWriteTypes.h"
 
+using PinWriteSequence = std::queue<PinWrite::PinOperation>;
+
+bool submitPinWriteSequence(PinWriteSequence&& sequence);
 void startPinWriteSequenceSchedulerTask();
