@@ -49,17 +49,17 @@ PinWrite::ValidationResult PinWrite::validatePinArguments(const JsonObjectConst 
         pin,
         delayAfter,
         hasDigital,
-        hasDigital ? (strcasecmp("HIGH", digitalValue.c_str()) == 0 ? HIGH : LOW) : analogValue
+        static_cast<uint16_t>(hasDigital ? (strcasecmp("HIGH", digitalValue.c_str()) == 0 ? HIGH : LOW) : analogValue)
     } };
 }
 
-void PinWrite::handlePinOperations(const PinWrite::ValidationResult& info) {
-    pinMode(info.operation.pin, OUTPUT);
+void PinWrite::handlePinOperations(const PinWrite::PinOperation& info) {
+    pinMode(info.pin, OUTPUT);
 
-    if (!info.operation.digital) {
-        analogWrite(info.operation.pin, info.operation.value);
+    if (!info.digital) {
+        analogWrite(info.pin, info.value);
         return;
     }
 
-    digitalWrite(info.operation.pin, info.operation.value);
+    digitalWrite(info.pin, info.value);
 }

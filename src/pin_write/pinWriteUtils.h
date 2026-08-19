@@ -15,5 +15,5 @@ const static std::unordered_set<uint8_t> PROHIBITED_PINS = {0,  1,  3,  6,  7,  
 
 // Methods
 ValidationResult validatePinArguments(const JsonObjectConst args);
-void handlePinOperations(const ValidationResult& info);
+void handlePinOperations(const PinOperation& info);
 };  // namespace PinWrite
