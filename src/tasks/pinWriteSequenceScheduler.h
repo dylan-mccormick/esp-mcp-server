@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include <queue>
-#include <variant>
-
 #include <freertos/FreeRTOS.h>
 #include <freertos/queue.h>
+
+#include <queue>
+#include <variant>
 
 #include "pin_write/pinWriteTypes.h"
 

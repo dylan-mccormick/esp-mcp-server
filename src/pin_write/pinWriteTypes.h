@@ -11,7 +11,7 @@ struct PinOperation {
     int delayAfter;
 
     bool digital;
-    uint16_t value; // if digital is true, 0 for LOW, 1 for HIGH
+    uint16_t value;  // if digital is true, 0 for LOW, 1 for HIGH
 };
 
 struct ValidationResult {
@@ -22,4 +22,4 @@ struct ValidationResult {
 
     static ValidationResult errorResult(const char* method);
 };
-} // namespace PinWrite
+}  // namespace PinWrite
