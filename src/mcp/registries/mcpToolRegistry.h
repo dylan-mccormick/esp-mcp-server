@@ -22,7 +22,6 @@ struct SchemaProperty {
 struct ToolInputSchema {
     const SchemaProperty* properties;
     size_t propertyCount;
-    std::function<void(const JsonObject inputSchema)> customSchemaWriter;
 };
 
 struct McpToolDef {

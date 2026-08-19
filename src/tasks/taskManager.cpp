@@ -1,10 +1,10 @@
 // taskManager.cpp
 // Contains logic to manage all FreeRTOS task definitions
 
-#include "refreshFrontendTask.h"
-#include "pinWriteSequenceScheduler.h"
+#include <Arduino.h>
+
+#include "tasks.h"
 
 void startAllBackgroundTasks() {
-    startRefreshFrontendTask();
-    startPinWriteSequenceSchedulerTask();
+    xTaskCreate(refreshFrontendTask, "RefreshFrontendTask", 16384, nullptr, 1, nullptr);
 }
