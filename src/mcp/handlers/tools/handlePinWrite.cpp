@@ -19,9 +19,10 @@ void handlePinWrite(JsonObjectConst args, JsonVariant result) {
     const PinWrite::ValidationResult validation = PinWrite::validatePinArguments(args);
     if (!validation.ok) {
         writeToolError(result, validation.error);
+        return;
     }
 
-    PinWrite::handlePinOperations(validation);
+    PinWrite::handlePinOperations(validation.operation);
     writeToolSuccess(result, "success");
 };
 
