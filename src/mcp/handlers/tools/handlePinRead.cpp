@@ -4,12 +4,30 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
-#include <unordered_set>
-
 #include "mcp/registries/mcpToolRegistry.h"
 #include "toolUtils.h"
 
-static const std::unordered_set<uint8_t> PROHIBITED_PINS = {6, 7, 8, 9, 10, 11, 20, 24, 28, 29, 30, 31, 37, 38};
+static bool isProhibitedPin(uint8_t pin) {
+    switch (pin) {
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 10:
+        case 11:
+        case 20:
+        case 24:
+        case 28:
+        case 29:
+        case 30:
+        case 31:
+        case 37:
+        case 38:
+            return true;
+        default:
+            return false;
+    }
+}
 
 static const SchemaProperty pinReadProps[] = {
     {"pin", "integer", "gpio pin to read", true},
@@ -19,11 +37,16 @@ static const ToolInputSchema pinReadSchema = {pinReadProps, 2};
 
 void handlePinRead(JsonObjectConst args, JsonVariant result) {
     // require pin
-    uint8_t pin;
-    if (!requireArg<uint8_t>(args, "pin", pin)) {
+    int pinValue;
+    if (!requireArg<int>(args, "pin", pinValue)) {
         writeToolError(result, "pin must be provided as an integer");
         return;
     }
+    if (pinValue < 0 || pinValue > 39) {
+        writeToolError(result, "pin must be between 0-39, must conform to the valid pins as described by the tool");
+        return;
+    }
+    const uint8_t pin = static_cast<uint8_t>(pinValue);
 
     // require mode
     String mode;
@@ -33,13 +56,13 @@ void handlePinRead(JsonObjectConst args, JsonVariant result) {
     }
 
     // pin valudation
-    if (PROHIBITED_PINS.count(pin) > 0 || pin < 0 || pin > 39) {
+    if (isProhibitedPin(pin)) {
         writeToolError(result, "pin must be between 0-39, must conform to the valid pins as described by the tool");
         return;
     }
 
     // mode validation
-    uint8_t modeEnum;
+    uint8_t modeEnum = INPUT;
     bool readAnalog = strcasecmp(mode.c_str(), "ANALOG") == 0;
     if (strcasecmp(mode.c_str(), "DIGITAL_PULLUP") == 0)
         modeEnum = INPUT_PULLUP;
@@ -47,11 +70,6 @@ void handlePinRead(JsonObjectConst args, JsonVariant result) {
         modeEnum = INPUT_PULLDOWN;
     else if (strcasecmp(mode.c_str(), "DIGITAL") == 0 || strcasecmp(mode.c_str(), "ANALOG") == 0)
         modeEnum = INPUT;
-
-    if (std::unordered_set<uint8_t>{INPUT, INPUT_PULLUP, INPUT_PULLDOWN}.count(modeEnum) == 0) {
-        writeToolError(result, "mode must be DIGITAL_PULLUP, DIGITAL_PULLDOWN, DIGITAL, or ANALOG");
-        return;
-    }
 
     if (modeEnum != INPUT && pin >= 34) {  // these pins don't have the resistors to do PULLUP/PULLDOWN
         writeToolError(result, "gpio 34-39 cannot be used with DIGITAL_PULLUP or DIGITAL_PULLDOWN");

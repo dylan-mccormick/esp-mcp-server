@@ -26,12 +26,16 @@ void processSequence(PinWriteSequence* sequence, pinPriorityQueue& queue) {
     TickType_t nextTickCount = xTaskGetTickCount();
 
     while (!sequence->empty()) {
-        Serial.println(nextTickCount);
         PinWrite::PinOperation target = sequence->front();
 
         ScheduledPinOperation* ptr =
             new ScheduledPinOperation({target.pin, target.digital, target.value, nextTickCount});
-        nextTickCount += pdMS_TO_TICKS(target.delayAfter);
+        const TickType_t delayTicks = pdMS_TO_TICKS(target.delayAfter);
+        if (nextTickCount > portMAX_DELAY - delayTicks) {
+            nextTickCount = portMAX_DELAY;
+        } else {
+            nextTickCount += delayTicks;
+        }
 
         queue.push(ptr);
         sequence->pop();
@@ -57,7 +61,6 @@ void pinWriteSchedulerTask(void* pvParameters) {
         // Receive new data from bufferQueue
         PinWriteSequence* recv;
         if (xQueueReceive(bufferQueue, &recv, 0) == pdTRUE) {
-            Serial.println("Recv data");
             processSequence(recv, operations);
         }
 

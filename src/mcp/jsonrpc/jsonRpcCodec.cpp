@@ -10,17 +10,34 @@
 ParseResult<JsonRpcRequest> parseRequest(const JsonDocument& doc) {
     JsonRpcRequest req;
 
-    // validation
-    if (!doc["id"].is<long>() && !doc["id"].is<const char*>()) {
-        return {false, {}, "id must be a string or number"};
+    if (doc["jsonrpc"] != JSON_RPC_PROTOCOL_VERSION) {
+        return {false, {}, "jsonrpc must be 2.0"};
     }
     if (!doc["method"].is<const char*>()) {
         return {false, {}, "method must be a string"};
     }
 
+    const bool hasId = doc.containsKey("id");
+    if (hasId && (!doc["id"].is<long>() && !doc["id"].is<const char*>() && !doc["id"].is<int64_t>())) {
+        return {false, {}, "id must be a string or integer"};
+    }
+
+    if (!doc["params"].isNull() && !doc["params"].is<JsonObjectConst>()) {
+        return {false, {}, "params must be an object"};
+    }
+
+    JsonObjectConst params = doc["params"].as<JsonObjectConst>();
+    JsonObjectConst meta = params["_meta"].as<JsonObjectConst>();
+    if (!meta["io.modelcontextprotocol/protocolVersion"].is<const char*>()) {
+        return {false, {}, "missing protocol version metadata"};
+    }
+    if (!meta["io.modelcontextprotocol/clientCapabilities"].is<JsonObjectConst>()) {
+        return {false, {}, "missing client capabilities metadata"};
+    }
+
     req.id = doc["id"];
     req.method = doc["method"].as<const char*>();
-    req.params = doc["params"].as<JsonObjectConst>();
+    req.params = params;
 
     return {true, req, nullptr};
 }

@@ -7,35 +7,54 @@
 #include <HTTPClient.h>
 #include <LittleFS.h>
 
+#ifndef FRONTEND_PAGE_SOURCE_URL
 #define FRONTEND_PAGE_SOURCE_URL "https://registry-api.mnmzc.us.to/r/7/api/v1/public/frontend/index.html"
-#define FRONTEND_PAGE_CACHE_TTL 5 * 60 * 1000  // 5 minutes
+#endif
+#ifndef FRONTEND_PAGE_CACHE_TTL_MS
+#define FRONTEND_PAGE_CACHE_TTL_MS (5UL * 60UL * 1000UL)
+#endif
+#ifndef FRONTEND_PAGE_MAX_SIZE
+#define FRONTEND_PAGE_MAX_SIZE 262144
+#endif
+#ifndef FRONTEND_HTTP_TIMEOUT_MS
+#define FRONTEND_HTTP_TIMEOUT_MS 10000
+#endif
 
 void refreshFrontendTask(void* pvParameters) {
     for (;;) {
-        // Open the file
-        File file = LittleFS.open("/app.html", "w");
+        File file = LittleFS.open("/app.html.tmp", "w");
         if (!file) {
-            Serial.println("Failed to open /app.html for writing.");
-            vTaskDelay(pdMS_TO_TICKS(FRONTEND_PAGE_CACHE_TTL));
+            vTaskDelay(pdMS_TO_TICKS(FRONTEND_PAGE_CACHE_TTL_MS));
             continue;
         }
 
         // make the request
         HTTPClient http;
+        http.setTimeout(FRONTEND_HTTP_TIMEOUT_MS);
         http.begin(FRONTEND_PAGE_SOURCE_URL);
         int httpCode = http.GET();
 
         // parse results
-        if (httpCode == HTTP_CODE_OK) {
+        const int contentLength = http.getSize();
+        if (httpCode == HTTP_CODE_OK && contentLength >= 0 && contentLength <= FRONTEND_PAGE_MAX_SIZE) {
             http.writeToStream(&file);
-            Serial.println("Successfully saved new frontend page.");
+            file.close();
+            File downloadedFile = LittleFS.open("/app.html.tmp", "r");
+            const size_t downloadedSize = downloadedFile ? downloadedFile.size() : 0;
+            downloadedFile.close();
+            if (downloadedFile && downloadedSize <= FRONTEND_PAGE_MAX_SIZE) {
+                LittleFS.remove("/app.html");
+                LittleFS.rename("/app.html.tmp", "/app.html");
+            } else {
+                LittleFS.remove("/app.html.tmp");
+            }
         } else {
-            Serial.printf("Frontend page fetch GET failed, error: %s\n", http.errorToString(httpCode).c_str());
+            file.close();
+            LittleFS.remove("/app.html.tmp");
         }
 
         http.end();
-        file.close();
-        vTaskDelay(pdMS_TO_TICKS(FRONTEND_PAGE_CACHE_TTL));
+        vTaskDelay(pdMS_TO_TICKS(FRONTEND_PAGE_CACHE_TTL_MS));
     }
 }
 

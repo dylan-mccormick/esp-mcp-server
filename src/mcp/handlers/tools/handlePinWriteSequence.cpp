@@ -38,11 +38,9 @@ void writePinWriteSequenceInputSchema(JsonObject inputSchema) {
     digitalValueProp["type"] = "string";
     digitalValueProp["description"] = "HIGH for on, LOW for off";
 
-    JsonObject delayBeforeProp = stepProperties["delayBefore"].to<JsonObject>();
-    delayBeforeProp["type"] = "integer";
-    delayBeforeProp["description"] =
-        "milliseconds to delay before running this operation; all successive operations will wait for this one to "
-        "complete";
+    JsonObject delayAfterProp = stepProperties["delayAfter"].to<JsonObject>();
+    delayAfterProp["type"] = "integer";
+    delayAfterProp["description"] = "milliseconds to wait after this operation before running the next one";
 }
 
 static const ToolInputSchema pinWriteSequenceSchema = {nullptr, 0, writePinWriteSequenceInputSchema};

@@ -12,15 +12,16 @@ PinWrite::ValidationResult PinWrite::ValidationResult::errorResult(const char* m
 
 PinWrite::ValidationResult PinWrite::validatePinArguments(const JsonObjectConst args) {
     // require pin
-    uint8_t pin;
-    if (!requireArg<uint8_t>(args, "pin", pin)) {
+    int pinValue;
+    if (!requireArg<int>(args, "pin", pinValue) || pinValue < 0 || pinValue > 39) {
         return PinWrite::ValidationResult::errorResult("pin must be provided as an integer");
     }
+    const uint8_t pin = static_cast<uint8_t>(pinValue);
 
     // require value
-    uint16_t analogValue;
+    int analogValue;
     String digitalValue;
-    bool hasAnalog = requireArg<uint16_t>(args, "analogValue", analogValue);
+    bool hasAnalog = requireArg<int>(args, "analogValue", analogValue);
     bool hasDigital = requireArg<String>(args, "digitalValue", digitalValue);
     if (hasDigital == hasAnalog) {
         return PinWrite::ValidationResult::errorResult(
@@ -30,7 +31,9 @@ PinWrite::ValidationResult PinWrite::validatePinArguments(const JsonObjectConst 
 
     // optional delaAfter
     int delayAfter = 0;
-    requireArg<int>(args, "delayAfter", delayAfter);
+    if (!args["delayAfter"].isNull() && (!requireArg<int>(args, "delayAfter", delayAfter) || delayAfter < 0)) {
+        return PinWrite::ValidationResult::errorResult("delayAfter must be a non-negative integer");
+    }
 
     // pin valudation
     if (PROHIBITED_PINS.count(pin) > 0 || pin > 39) {
