@@ -19,7 +19,7 @@
 #define DEV_MODE false
 #endif
 
-AsyncWebServer server(80);
+AsyncWebServer server(WEB_SERVER_PORT);
 AsyncRateLimitMiddleware rateLimit;
 AsyncLoggingMiddleware logging;
 AsyncCorsMiddleware cors;
@@ -35,13 +35,12 @@ void webServerInit() {
     rateLimit.setWindowSize(RATE_LIMIT_WINDOW);
     server.addMiddleware(&rateLimit);
 
-    // CORS global allow
-    cors.setOrigin("*");
+    cors.setOrigin("same-origin");
     cors.setMethods("GET,POST,OPTIONS");
     cors.setHeaders("Content-Type,Authorization,Mcp-Method,Mcp-Protocol-Version,Mcp-Name");
     server.addMiddleware(&cors);
 
-    // Origin validation logger
+    // Validate browser origins before serving the LAN API.
     server.addMiddleware([](AsyncWebServerRequest* request, ArMiddlewareNext next) {
         if (!request->hasHeader("Origin") || DEV_MODE) {
             // if DEV_MODE, we may be testing the MCP client from a different IP address -- only permissible for
@@ -54,12 +53,11 @@ void webServerInit() {
         String origin = request->header("Origin");
         String host = request->host();
 
-        // strip origin
+        // Strip the scheme and compare the complete authority to the request host.
         int schemeEnd = origin.indexOf("://");
-        String originHostname = (schemeEnd >= 0) ? origin.substring(schemeEnd + 3) : origin;
+        String originAuthority = (schemeEnd >= 0) ? origin.substring(schemeEnd + 3) : origin;
 
-        // validate
-        if (originHostname != host) {
+        if (originAuthority != host) {
             request->send(403, "text/plain", "Forbidden");
             return;
         }
