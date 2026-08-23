@@ -11,12 +11,15 @@ static const char* NVS_KEY = "data";
 
 void ComponentMemory::remember(int pin, const String& name, const String& description) {
     // Access memory
-    prefs.begin(NVS_NAMESPACE);
+    if (!prefs.begin(NVS_NAMESPACE)) return;
     String raw = prefs.getString(NVS_KEY, "[]");
 
     // Deserialize current Json
     JsonDocument doc;
-    deserializeJson(doc, raw);
+    if (deserializeJson(doc, raw)) {
+        prefs.end();
+        return;
+    }
     JsonArray arr = doc.as<JsonArray>();
 
     // Replace entry for pin, else append
@@ -46,29 +49,26 @@ void ComponentMemory::remember(int pin, const String& name, const String& descri
 
 void ComponentMemory::forget(int pin) {
     // Access memory
-    prefs.begin(NVS_NAMESPACE);
+    if (!prefs.begin(NVS_NAMESPACE)) return;
     String raw = prefs.getString(NVS_KEY, "[]");
 
     // Deserialize current Json
     JsonDocument doc;
-    deserializeJson(doc, raw);
-    JsonArrayConst arr = doc.as<JsonArrayConst>();
+    if (deserializeJson(doc, raw)) {
+        prefs.end();
+        return;
+    }
+    JsonArray arr = doc.as<JsonArray>();
 
-    // Copy the arr without the specified pin
-    JsonDocument filtered;
-    JsonArray filteredArr = filtered.to<JsonArray>();
-    for (JsonObjectConst entry : arr) {
-        if (entry["pin"] == pin) continue;
-
-        JsonObject copyObj = filteredArr.add<JsonObject>();
-        copyObj["pin"] = entry["pin"];
-        copyObj["name"] = entry["name"];
-        copyObj["notes"] = entry["notes"];
+    for (size_t index = arr.size(); index > 0; --index) {
+        if (arr[index - 1]["pin"] == pin) {
+            arr.remove(index - 1);
+        }
     }
 
     // Update
     String updated;
-    serializeJson(filtered, updated);
+    serializeJson(doc, updated);
     prefs.putString(NVS_KEY, updated);
     prefs.end();
 }
@@ -80,7 +80,7 @@ void ComponentMemory::listAll(JsonArray out) {
     prefs.end();
 
     JsonDocument doc;
-    deserializeJson(doc, raw);
+    if (deserializeJson(doc, raw)) return;
     for (JsonObjectConst entry : doc.as<JsonArrayConst>()) {
         JsonObject copy = out.add<JsonObject>();
         copy["pin"] = entry["pin"];
