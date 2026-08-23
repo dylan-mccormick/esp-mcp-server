@@ -7,8 +7,8 @@
 
 static const SchemaProperty rememberComponentProps[] = {
     {"pin", "integer", "gpio pin to remember", true},
-    {"name", "string", "short identifier for the wire connected to this pin"},
-    {"notes", "string", "detailed description of the wire connected to this pin and its specific purpose"}};
+    {"name", "string", "short identifier for the wire connected to this pin", true},
+    {"notes", "string", "detailed description of the wire connected to this pin and its specific purpose", true}};
 
 static const ToolInputSchema rememberComponentSchema = {rememberComponentProps, 3};
 
