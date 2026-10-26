@@ -1,5 +1,7 @@
 # ESP32 MCP Server
 
+![ESP32 MCP Server cover](images/cover.png)
+
 An open-source MCP server for an ESP32 running the Arduino framework. It exposes
 GPIO read/write operations, a small persistent component memory, serial output,
 and a scheduled GPIO sequence API over HTTP so an MCP client or a local web UI
